@@ -9,6 +9,7 @@ It uses 2 main forms of compression:
  (255,255,255), (255,255,255), (255,255,255) -> (255,255,255), 2
 
  - Removes colors that we're not changed compared to the last frame
+
 Last Frame:
   (255,255,255), (255,255,255), (255,255,255), (255,255,255)
 
