@@ -1,7 +1,7 @@
 
 # Screen Sharing in Roblox
 
-This project is a simple way of doing screen sharing in Roblox, while trying to keep the quality and performance high.
+This project is a simple way of doing screen sharing in Roblox, while trying to keep the quality while being performant.
 
 
 It uses 2 main forms of compression:
