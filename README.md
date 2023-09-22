@@ -40,7 +40,7 @@ Notes:
 
 ## Installation
 
-It's quite simple to install this, you only need a way to port forward (I recommend using Ngrok, if you cannot do it yourself)
+It's quite simple to install this, you only need a way to port forward (I recommend using PlayIt.gg, if you cannot do it yourself)
 
 You will also need to install the Python packages:
 ```bash
