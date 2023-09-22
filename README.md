@@ -5,19 +5,19 @@ This project is a simple way of doing screen sharing in Roblox, while trying to 
 
 
 It uses 2 main forms of compression:
-- Removing repetition of color data_
+- Removing repetition of color data:
  (255,255,255), (255,255,255), (255,255,255) -> (255,255,255), 2
 
  - Removes colors that we're not changed compared to the last frame
 
  Last Frame:
-  (255,255,255), (255,255,255), (255,255,255)
+  (255,255,255), (255,255,255), (255,255,255), (255,255,255)
 
 New Frame: 
-(255,255,255), (250,255,250), (255,255,255)
+(255,255,255), (250,255,250), (255,255,255), (255,255,255)
 
 Output: 
-1.1, (250,255,250), 1.1
+1.1, (250,255,250), 2.1
 
 Hex is used to store the color, but to display how the compression works I used RGB values
 
