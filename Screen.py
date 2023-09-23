@@ -1,6 +1,5 @@
 from flask import Flask, jsonify,request
 from PIL import Image,ImageGrab
-import pydirectinput
 import time
 import cv2
 from gevent.pywsgi import WSGIServer
@@ -9,19 +8,19 @@ app = Flask(__name__)
 
 ####Settings####
 FramesPerSecond = 8 # max fps is framegroups * 8
-XRes = 16*25   # 16*20 #
-YRes = 9*25 # 9*20
+XRes = 16*35   # 16*20 #
+YRes = 9*35 # 9*20
 
 KeyInput = True
 
-LosslessColorQuality = True
+CompressedColors = False
 FrameGroups = 1 #keep to low amounts such as 3 
 
 FrameSkip = 0
 
 FrameStart = 0
-VideoStreaming = False
-VideoPath = r"video path here"
+VideoStreaming = True
+VideoPath = r"mp4 file path here"
 ####Settings####
 
 LastFrame = []
@@ -33,15 +32,20 @@ cap = cv2.VideoCapture(VideoPath)
 
 cap.set(cv2.CAP_PROP_POS_FRAMES,FrameStart)
 
-def RGBToHex(rgb):
+def RGBToCompHex(rgb):
     return f"{(rgb[0] >> 4):X}{(rgb[1]  >> 4):X}{(rgb[2] >> 4):X}"
 
 def EncodeFrame(FirstTime,ServerID,SkipFrame):     
-    global LastFrame,FrameCount,LastFrame2,CurrentFrame,ServerList
+    global LastFrame,FrameCount
 
     if VideoStreaming and SkipFrame == "1":
-        ServerList[ServerID] += 2
+        ServerList[ServerID] += 1
         cap.set(cv2.CAP_PROP_POS_FRAMES,ServerList[ServerID]);
+    
+    if FirstTime == "1":
+        #Refresh the clients screen (doesnt compress it)
+        LastFrame = []
+    
     
     lastpixel = ""
     lastenumerate,lastDuplicate = 0,0
@@ -49,10 +53,6 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
     
     WasDuplicate = False
     WasRepetitive = False
-    
-    if FirstTime == "1":
-        #Refresh the clients screen (doesnt compress it)
-        LastFrame = []
 
     if not VideoStreaming:
         pic = ImageGrab.grab().resize((XRes,YRes),Image.Resampling.BILINEAR)
@@ -66,10 +66,11 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
         
         pic = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)).resize((XRes,YRes),Image.Resampling.BILINEAR)
     
-    if LosslessColorQuality:
-        CurrentFrame = ["%02x%02x%02x" % pixel for pixel in pic.getdata()]
+    if CompressedColors:
+        CurrentFrame = [RGBToCompHex(pixel) for pixel in pic.getdata()]
     else:
-        CurrentFrame = [RGBToHex(pixel) for pixel in pic.getdata()]
+        CurrentFrame = ["%02x%02x%02x" % pixel for pixel in pic.getdata()]
+
 
     #removes duplicates
     LastFrame2 = [*CurrentFrame]
@@ -130,9 +131,17 @@ def ReturnFrame():
     print(ServerList)
     
     Frames = []
+    
+    RealWait = 0
     for _ in range(FrameGroups):
-        time.sleep(1/FramesPerSecond)
+        #makes the frames "flow" smoother
+        start = time.time()
+        
         Frames.append(EncodeFrame(Method,ServerID,SkipFrame))
+        
+        RealWait = max(0,1/FramesPerSecond - (time.time()-start))
+        time.sleep(RealWait)
+        print(RealWait)
     
     return jsonify(Fr=Frames,F=FramesPerSecond,X=XRes, Y=YRes, G=FrameGroups)
 
