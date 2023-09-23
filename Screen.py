@@ -7,19 +7,19 @@ from gevent.pywsgi import WSGIServer
 app = Flask(__name__)
 
 ####Settings####
-FramesPerSecond = 8 # max fps is framegroups * 8
-XRes = 16*35   # 16*20 #
-YRes = 9*35 # 9*20
+FramesPerSecond = 2*8 # max fps is framegroups * 8
+XRes = 16*25   # 16*20 #
+YRes = 9*25 # 9*20
 
 KeyInput = True
 
 CompressedColors = False
-FrameGroups = 1 #keep to low amounts such as 3 
+FrameGroups = 2 #keep to low amounts such as 3 
 
 FrameSkip = 0
 
 FrameStart = 0
-VideoStreaming = True
+VideoStreaming = False
 VideoPath = r"mp4 file path here"
 ####Settings####
 
@@ -141,7 +141,6 @@ def ReturnFrame():
         
         RealWait = max(0,1/FramesPerSecond - (time.time()-start))
         time.sleep(RealWait)
-        print(RealWait)
     
     return jsonify(Fr=Frames,F=FramesPerSecond,X=XRes, Y=YRes, G=FrameGroups)
 
