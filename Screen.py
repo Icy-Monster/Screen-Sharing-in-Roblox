@@ -4,32 +4,29 @@ import time
 import cv2
 from gevent.pywsgi import WSGIServer
 
+####Settings####
+FPS = 3*8 #//Max FPS is FrameGroups * 8, due to max Roblox HTTP limit
+XRes = 16*25#//X resolution of your monitor, currently it is 16*N due to my aspect ratio
+YRes = 9*25#//Y resolution of your monitor, currently it is 9*N due to my aspect ratio
+
+CompressedColors = False #//Whether to compress colors, by removing their color quality
+FrameGroups = 3 #//Amount of Frames sent in Groups
+
+FrameSkip = 0 #How many times it should send a full frame without compression, (artifacts may appear with the compression, so this clears them up at the cost of performance)
+
+FrameStart = 0 #//Starting Frame of the Video
+VideoStreaming = False#//Self explanatory,
+VideoPath = r"mp4 video path here"
+####Settings####
+
 app = Flask(__name__)
 
-####Settings####
-FramesPerSecond = 2*8 # max fps is framegroups * 8
-XRes = 16*25   # 16*20 #
-YRes = 9*25 # 9*20
+LastFrame = []#Keeps track of the last frame, to apply compressions (doesnt send pixels that didnt change since the last frame)
+FrameCount = 1 #Keeps track of the frame count, for refreshing frames with FrameSkip
 
-KeyInput = True
-
-CompressedColors = False
-FrameGroups = 2 #keep to low amounts such as 3 
-
-FrameSkip = 0
-
-FrameStart = 0
-VideoStreaming = False
-VideoPath = r"mp4 file path here"
-####Settings####
-
-LastFrame = []
-FrameCount = 1
-
-ServerList = {}
+ServerList = {} #List of the servers its tracking, so that servers can watch their own films without interrupting each other
 
 cap = cv2.VideoCapture(VideoPath)
-
 cap.set(cv2.CAP_PROP_POS_FRAMES,FrameStart)
 
 def RGBToCompHex(rgb):
@@ -59,7 +56,7 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
     else:
         playing, frame = cap.read()
         if not playing:
-            #video ended, go to 1st
+            #video ended, go back to frame 0 to repeat the video
             cap.set(cv2.CAP_PROP_POS_FRAMES,0)
             ServerList[ServerID] = 0
             _, frame = cap.read()
@@ -118,34 +115,31 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
 
 @app.route('/',methods=['POST'])
 def ReturnFrame():
-    global ServerList
     Method = request.headers["R"]
     
     ServerID = request.headers["I"]
     SkipFrame = request.headers["F"]
+    print(ServerList)
 
     if not ServerID in ServerList:
         ServerList[ServerID] = FrameStart
-    
-    #Prints all the servers that its keeping track of
-    print(ServerList)
     
     Frames = []
     
     RealWait = 0
     for _ in range(FrameGroups):
-        #makes the frames "flow" smoother
+        #makes the frames "flow" smoother, by keeping track of how much time was spent on encoding the frame and then subtracting it from the FPS time sleep 
         start = time.time()
         
         Frames.append(EncodeFrame(Method,ServerID,SkipFrame))
         
-        RealWait = max(0,1/FramesPerSecond - (time.time()-start))
+        RealWait = max(0,1/FPS - (time.time()-start))
         time.sleep(RealWait)
     
-    return jsonify(Fr=Frames,F=FramesPerSecond,X=XRes, Y=YRes, G=FrameGroups)
+    return jsonify(Fr=Frames,F=FPS,X=XRes, Y=YRes, G=FrameGroups)
 
 def StartApi(Port):
-    print(str(XRes) + "x" + str(YRes) + "     Port:" + str(Port))
+    print(str(XRes) + "x" + str(YRes) + "    FPS: " + str(FPS)  + "    Port: " + str(Port))
     Server = WSGIServer(('127.0.0.1', Port), app)
     Server.serve_forever()
 
