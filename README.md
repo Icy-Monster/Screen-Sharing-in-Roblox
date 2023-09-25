@@ -34,11 +34,11 @@ Setting this up may require some knowledge, but I will try making it as simple a
   ```bash
   py Screen.py
   ```
-  This will run the python file, this part send the Roblox server your screen
+  This will run the python file, this part will send the Roblox server your screen
 
   5. Open up Screen.rbxl, and modify the IP:Port if you changed it in the settings, go play test it and it should hopefully work.
 
-  6. If there are any ,issues, then please open up an issue on github and I'll help to the best of my abilities
+  6. Bit of a heads up: if you are using this in a Roblox server, you will need to port forward or use a service such as PlayIt.gg and then change the HTTPAdress variable in the     .rbxl file
   
 
 ## Installation
