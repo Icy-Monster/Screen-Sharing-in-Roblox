@@ -119,7 +119,6 @@ def ReturnFrame():
     
     ServerID = request.headers["I"]
     SkipFrame = request.headers["F"]
-    print(ServerList)
 
     if not ServerID in ServerList:
         ServerList[ServerID] = FrameStart
