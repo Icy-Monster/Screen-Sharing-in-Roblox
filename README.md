@@ -24,7 +24,7 @@ Hex is used to store the color, but to display how the compression works I used 
 
 ## How To Use
 Setting this up may require some knowledge, but I will try making it as simple as possible:
-- 1. If you don't already have Python installed, then install it: https://www.python.org/downloads/
+ 1. If you don't already have Python installed, then install it: https://www.python.org/downloads/
   
   2. Install the required packages (Instructions at the Installation section)
   
@@ -38,7 +38,7 @@ Setting this up may require some knowledge, but I will try making it as simple a
 
   5. Open up Screen.rbxl, and modify the IP:Port if you changed it in the settings, go play test it and it should hopefully work.
 
-  6. If there are any issues, then please open up an issue on github and I'll help to the best of my abilities
+  6. If there are any ,issues, then please open up an issue on github and I'll help to the best of my abilities
   
 
 ## Installation
