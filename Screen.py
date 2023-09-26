@@ -125,15 +125,16 @@ def ReturnFrame():
     
     Frames = []
     
-    RealWait = 0
+    WaitOffset = 0
+    
     for _ in range(FrameGroups):
         #makes the frames "flow" smoother, by keeping track of how much time was spent on encoding the frame and then subtracting it from the FPS time sleep 
+        time.sleep(max(0, 1/FPS - WaitOffset))
+        
         start = time.time()
-        
         Frames.append(EncodeFrame(Method,ServerID,SkipFrame))
-        
-        RealWait = max(0,1/FPS - (time.time()-start))
-        time.sleep(RealWait)
+        WaitOffset = time.time()-start
+
     
     return jsonify(Fr=Frames,F=FPS,X=XRes, Y=YRes, G=FrameGroups)
 
