@@ -113,8 +113,10 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
     
     return tuple(filter(None, CurrentFrame))
 
+WaitOffset = 0
 @app.route('/',methods=['POST'])
 def ReturnFrame():
+    global WaitOffset
     Method = request.headers["R"]
     
     ServerID = request.headers["I"]
@@ -124,9 +126,6 @@ def ReturnFrame():
         ServerList[ServerID] = FrameStart
     
     Frames = []
-    
-    WaitOffset = 0
-    
     for _ in range(FrameGroups):
         #makes the frames "flow" smoother, by keeping track of how much time was spent on encoding the frame and then subtracting it from the FPS time sleep 
         time.sleep(max(0, 1/FPS - WaitOffset))
