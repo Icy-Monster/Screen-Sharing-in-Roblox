@@ -1,4 +1,4 @@
 Flask==2.3.3
-gevent==22.10.2
+gevent==23.9.1
 opencv_python==4.6.0.66
 Pillow==10.0.1
