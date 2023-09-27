@@ -113,10 +113,8 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
     
     return tuple(filter(None, CurrentFrame))
 
-WaitOffset = 0
 @app.route('/',methods=['POST'])
 def ReturnFrame():
-    global WaitOffset
     Method = request.headers["R"]
     
     ServerID = request.headers["I"]
@@ -127,12 +125,12 @@ def ReturnFrame():
     
     Frames = []
     for _ in range(FrameGroups):
-        #makes the frames "flow" smoother, by keeping track of how much time was spent on encoding the frame and then subtracting it from the FPS time sleep 
-        time.sleep(max(0, 1/FPS - WaitOffset))
-        
+        #makes the frames "flow" smoother, by keeping track of how much time was spent on encoding the frame and then subtracting it from the FPS time sleep         
         start = time.time()
         Frames.append(EncodeFrame(Method,ServerID,SkipFrame))
         WaitOffset = time.time()-start
+        
+        time.sleep(max(0, 1/FPS - WaitOffset))
 
     
     return jsonify(Fr=Frames,F=FPS,X=XRes, Y=YRes, G=FrameGroups)
