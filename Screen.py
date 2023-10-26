@@ -4,6 +4,7 @@ import time
 import cv2
 from gevent.pywsgi import WSGIServer
 
+# I recommend changing these settings quite a lot, these settings are just to push it to the limit and to test it
 ####Settings####
 FPS = 3*8 #//Max FPS is FrameGroups * 8, due to max Roblox HTTP limit
 XRes = 16*25#//X resolution of your monitor, currently it is 16*N due to my aspect ratio
@@ -15,7 +16,7 @@ FrameGroups = 3 #//Amount of Frames sent in Groups
 FrameSkip = 0 #How many times it should send a full frame without compression, (artifacts may appear with the compression, so this clears them up at the cost of performance)
 
 FrameStart = 0 #//Starting Frame of the Video
-VideoStreaming = False#//Self explanatory,
+VideoStreaming = False #//Self explanatory,
 VideoPath = r"mp4 video path here"
 ####Settings####
 
