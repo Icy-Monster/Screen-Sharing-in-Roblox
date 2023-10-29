@@ -18,7 +18,7 @@ New Frame:
 (255,255,255), (0,0,0), (255,255,255), (255,255,255)
 
 Output: 
-1.1, (250,255,250), 2.1
+1.1, (0,0,0), 2.1
 
 Hex is used to store the color, but to display how the compression works I used RGB values
 
