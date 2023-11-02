@@ -36,7 +36,7 @@ Setting this up may require some knowledge, but I will try making it as simple a
   ```
   This will run the python file, this part will send the Roblox server your screen
 
-  5. Open up Screen.rbxl, and modify the IP:Port if you changed it in the settings, go play test it and it should hopefully work.
+  5. Open up Screen.rbxl, and modify the HTTPAdress variable in the ServerScriptService script, so that it fits the correct IP that it will connect to. (The default setting is for the local host, if you don't want to modify the ip then you can leave this variable alone)
 
   6. Bit of a heads up: if you are using this in a Roblox server, you will need to port forward or use a service such as PlayIt.gg and then change the HTTPAdress variable in the     .rbxl file
   
