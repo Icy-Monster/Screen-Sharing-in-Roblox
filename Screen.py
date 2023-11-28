@@ -6,18 +6,20 @@ from gevent.pywsgi import WSGIServer
 
 # I recommend changing these settings quite a lot, these settings are just to push it to the limit and to test it
 ####Settings####
-FPS = 3*8 #//Max FPS is FrameGroups * 8, due to max Roblox HTTP limit
-XRes = 16*25#//X resolution of your monitor, currently it is 16*N due to my aspect ratio
-YRes = 9*25#//Y resolution of your monitor, currently it is 9*N due to my aspect ratio
+FPS = 1*8 #Max FPS is FrameGroups * 8, due to max Roblox HTTP limit
+XRes = 16*25#X resolution of your monitor, currently it is 16*N due to my aspect ratio
+YRes = 9*25#Y resolution of your monitor, currently it is 9*N due to my aspect ratio
 
-CompressedColors = False #//Whether to compress colors, by removing their color quality
-FrameGroups = 3 #//Amount of Frames sent in Groups
+CompressedColors = False #Whether to compress colors, by removing their color quality
+FrameGroups = 1 #Amount of Frames sent in Groups
 
 FrameSkip = 0 #How many times it should send a full frame without compression, (artifacts may appear with the compression, so this clears them up at the cost of performance)
 
-FrameStart = 0 #//Starting Frame of the Video
-VideoStreaming = False #//Self explanatory,
-VideoPath = r"mp4 video path here"
+FrameStart = 0 #Starting Frame of the Video
+VideoStreaming = True #Self explanatory,
+VideoPath = r"Video file path here"
+
+SpeedMultiplier = 1 #The amount of frames it should skip each new frame, setting this to 1 will play every frame (only for video)
 ####Settings####
 
 app = Flask(__name__)
@@ -37,7 +39,7 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
     global LastFrame,FrameCount
 
     if VideoStreaming and SkipFrame == "1":
-        ServerList[ServerID] += 1
+        ServerList[ServerID] += SpeedMultiplier
         cap.set(cv2.CAP_PROP_POS_FRAMES,ServerList[ServerID]);
     
     if FirstTime == "1":
