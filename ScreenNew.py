@@ -16,7 +16,7 @@ FrameGroups = 1 #Amount of Frames sent in Groups
 FrameSkip = 0 #How many times it should send a full frame without compression, (artifacts may appear with the compression, so this clears them up at the cost of performance)
 
 FrameStart = 0 #Starting Frame of the Video
-VideoStreaming = True #Self explanatory,
+VideoStreaming = False #Self explanatory,
 VideoPath = r"Video file path here"
 
 SpeedMultiplier = 1 #The amount of frames it should skip each new frame, setting this to 1 will play every frame (only for video)
@@ -66,55 +66,10 @@ def EncodeFrame(FirstTime,ServerID,SkipFrame):
         
         pic = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)).resize((XRes,YRes),Image.Resampling.BILINEAR)
     
-    if CompressedColors:
-        CurrentFrame = [RGBToCompHex(pixel) for pixel in pic.getdata()]
-    else:
-        CurrentFrame = ["%02x%02x%02x" % pixel for pixel in pic.getdata()]
+    CurrentFrame = [(pixel[0]/255, pixel[1]/255, pixel[2]/255, 1) for pixel in pic.getdata()][::-1]
+    CurrentFrame = [value for pixel in CurrentFrame for value in pixel]
 
-
-    #removes duplicates
-    LastFrame2 = [*CurrentFrame]
-
-    FrameLen = len(LastFrame)
-    
-    for i,v in enumerate(CurrentFrame):
-        #Removes non changed colors
-        if FrameLen > i and v == LastFrame[i]:
-            if WasDuplicate:
-                DuplicateNumber += 1
-                CurrentFrame[lastDuplicate] = DuplicateNumber
-                CurrentFrame[i] = '' 
-            else:
-                CurrentFrame[i] = 1
-                lastDuplicate = i
-                DuplicateNumber = 1
-            WasDuplicate = True
-            continue
-        else:
-            WasDuplicate = False
-        
-        #Removes color repetition
-        if lastpixel == v:
-            if WasRepetitive:
-                number += 1
-                CurrentFrame[lastenumerate] = number
-                CurrentFrame[i] = ''
-            else:
-                CurrentFrame[i] = 1.1
-                lastenumerate = i
-                number = 1.1
-            WasRepetitive = True
-        else:
-            lastpixel = v
-            WasRepetitive = False
-    
-    FrameCount += 1
-    if FrameCount < FrameSkip:
-        LastFrame = []
-    else:
-        LastFrame = LastFrame2
-    
-    return tuple(filter(None, CurrentFrame))
+    return CurrentFrame
 
 @app.route('/',methods=['POST'])
 def ReturnFrame():
