@@ -1,4 +1,4 @@
 Flask==2.3.3
 gevent==23.9.1
 opencv_python==4.6.0.66
-Pillow==10.2.0
+Pillow==10.3.0
